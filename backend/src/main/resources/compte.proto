@@ -1,0 +1,104 @@
+syntax = "proto3";
+option java_package = "org.marouanedbibih.grpc.stubs";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto"; // For Empty type
+
+
+// Enumération pour le type de compte
+enum TypeCompte {
+  COURANT = 0;
+  EPARGNE = 1;
+}
+
+// Message représentant un compte
+message Compte {
+  int64 id = 1;
+  float solde = 2;
+  string dateCreation = 3;
+  TypeCompte type = 4;
+}
+
+// Message pour la requête de création ou mise à jour d'un compte
+message CompteREQ {
+  float solde = 1;
+  string dateCreation = 2;
+  TypeCompte type = 3;
+}
+
+// Message pour les statistiques de solde
+message SoldeStats {
+  int32 count = 1;     // Nombre total de comptes
+  float sum = 2;       // Somme des soldes
+  float average = 3;   // Moyenne des soldes
+}
+
+// Messages pour les requêtes et réponses du service
+
+// Requête pour obtenir tous les comptes
+message GetAllComptesREQ {}
+
+// Réponse contenant la liste des comptes
+message GetAllComptesRES {
+  repeated Compte comptes = 1;
+}
+
+// Requête pour obtenir un compte par ID
+message GetCompteByIdREQ {
+  int64 id = 1;
+}
+
+// Réponse contenant le compte demandé
+message GetCompteByIdRES {
+  Compte compte = 1;
+}
+
+// Requête pour obtenir les statistiques de solde
+message GetTotalSoldeREQ {}
+
+// Réponse contenant les statistiques de solde
+message GetTotalSoldeRES {
+  SoldeStats stats = 1;
+}
+
+// Requête pour sauvegarder un compte (création ou mise à jour)
+message SaveCompteREQ {
+  CompteREQ compte = 1;
+}
+
+// Réponse contenant le compte sauvegardé
+message SaveCompteRES {
+  Compte compte = 1;
+}
+
+message UpdateCompteREQ {
+  Compte compte = 1;
+}
+
+message UpdateCompteRES {
+  int64 id = 1;
+  Compte compte = 2;
+}
+
+message DeleteCompteREQ {
+  int64 id = 1;
+}
+// Définition du service correspondant aux requêtes et mutations GraphQL
+service CompteService {
+  // Équivalent de la requête allComptes
+  rpc AllComptes(GetAllComptesREQ) returns (GetAllComptesRES);
+
+  // Équivalent de la requête compteById
+  rpc CompteById(GetCompteByIdREQ) returns (GetCompteByIdRES);
+
+  // Équivalent de la requête totalSolde
+  rpc TotalSolde(GetTotalSoldeREQ) returns (GetTotalSoldeRES);
+
+  // Équivalent de la mutation saveCompte
+  rpc SaveCompte(SaveCompteREQ) returns (SaveCompteRES);
+
+  // Update Compte
+  rpc UpdateCompte(UpdateCompteREQ) returns (UpdateCompteRES);
+
+  rpc DeleteCompte(DeleteCompteREQ) returns (google.protobuf.Empty);
+}
